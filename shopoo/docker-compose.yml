@@ -1,0 +1,16 @@
+version: '3'
+
+services:
+  aoa_db:
+    image: postgres
+    restart: always
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: sqladmin
+      POSTGRES_PASSWORD: password
+    volumes:
+      - aoa_db_data:/var/lib/postgresql/data
+
+volumes:
+  aoa_db_data:
