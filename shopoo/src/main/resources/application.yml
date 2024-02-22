@@ -1,9 +1,14 @@
 spring:
   datasource:
-    url: jdbc:postgresql://localhost:5432/shopoo
-    username: postgres
-    password: "030431"
+    url: jdbc:postgresql://localhost:5433/shopoo
+    username: sqladmin
+    password: password
   jpa:
-    hibernate:
-      ddl-auto: create-drop
+    database: postgresql
     show-sql: true
+    hibernate:
+      ddl-auto: update
+  flyway:
+    locations: classpath:db_migration
+    baseline-on-migrate: true
+    enabled: true
