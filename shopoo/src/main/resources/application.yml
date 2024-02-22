@@ -1,8 +1,9 @@
 spring:
   datasource:
     url: jdbc:postgresql://localhost:5432/shopoo
-    username: sqladmin
-    password: password
+    username: postgres
+    password: "030431"
   jpa:
     hibernate:
       ddl-auto: create-drop
+    show-sql: true

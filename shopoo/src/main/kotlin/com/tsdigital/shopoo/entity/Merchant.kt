@@ -7,7 +7,6 @@ import jakarta.persistence.GeneratedValue
 import jakarta.persistence.GenerationType
 import jakarta.persistence.Id
 import jakarta.persistence.OneToMany
-import org.apache.logging.log4j.util.StringMap
 import org.hibernate.annotations.CreationTimestamp
 import org.hibernate.annotations.UpdateTimestamp
 import java.util.*
@@ -16,7 +15,7 @@ import java.util.*
 data class Merchant(
         @Id
         @GeneratedValue(strategy = GenerationType.UUID)
-        var uuid: UUID,
+        var uuid: UUID? = null,
 
         @Column(name = "store_name")
         var storeName: String,
@@ -27,17 +26,23 @@ data class Merchant(
         @Column(name = "last_name")
         var lastName: String,
 
+        @Column(name = "phone")
+        var phone: String,
+
+        @Column(name = "email")
+        var email: String,
+
         @OneToMany(mappedBy = "merchant", cascade = [CascadeType.ALL], orphanRemoval = true)
         var product: MutableList<Product> = mutableListOf(),
 
         @CreationTimestamp
         @Column(name = "created_at", updatable = false)
-        var createdAt: Date,
+        var createdAt: Date? = null,
 
         @UpdateTimestamp
         @Column(name = "updated_at")
-        var updatedAt: Date,
+        var updatedAt: Date? = null,
 
         @Column(name = "is_delete", columnDefinition = "boolean default false")
-        var isDelete: Boolean,
+        var isDelete: Boolean? = false,
 )
