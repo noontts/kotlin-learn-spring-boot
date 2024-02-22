@@ -29,7 +29,7 @@ class MerchantService(private val merchantRepository: MerchantRepository) {
     fun getMerchantDetail(){}
     fun retrieveMerchantList(page: Int, size: Int): RetrieveMerchantListRes {
         val pageable: Pageable = PageRequest.of(page, size)
-        val pageResult: Page<Merchant> = merchantRepository.findAll(pageable)
+        val pageResult: Page<Merchant> = merchantRepository.findAllByIsDeleteIsFalse(pageable)
 
         val merchantsDTO = pageResult.map {merchant ->
             MerchantListMapper.toMerchantDto(merchant)
