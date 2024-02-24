@@ -31,5 +31,8 @@ class MerchantController(private val merchantService: MerchantService) {
     @PostMapping("/edit")
     fun editMerchantDetail(){}
     @PostMapping("/delete")
-    fun deleteMerchantDetail(){}
+    fun deleteMerchantDetail(@Valid @RequestBody deleteMerchantReq: DeleteMerchantReq)
+    : DeleteMerchantRes{
+        return merchantService.deleteMerchant(deleteMerchantReq.uuid)
+    }
 }
