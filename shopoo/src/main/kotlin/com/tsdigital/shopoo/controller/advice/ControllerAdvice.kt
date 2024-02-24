@@ -1,6 +1,7 @@
 package com.tsdigital.shopoo.controller.advice
 
 import com.tsdigital.shopoo.config.CommonException
+import com.tsdigital.shopoo.constants.ResponseCode
 import com.tsdigital.shopoo.dto.error.ErrorRes
 import com.tsdigital.shopoo.dto.error.ErrorValidRes
 import org.springframework.http.HttpStatus
@@ -17,7 +18,13 @@ class ControllerAdvice {
 
     @ExceptionHandler(Exception::class)
     fun handleGenericException(e: Exception): ResponseEntity<ErrorRes>{
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ErrorRes(5000,"Internal Server error", Date()))
+
+        val responseCode = ResponseCode.INTERNAL_SERVER_ERROR
+
+        println(e.message)
+
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(
+            ErrorRes(responseCode.code, responseCode.message, Date()))
     }
 
     @ExceptionHandler(CommonException::class)
@@ -37,8 +44,10 @@ class ControllerAdvice {
             errorDetails.add(fieldError.field + ": " + fieldError.defaultMessage)
         }
 
+        val responseCode = ResponseCode.FAIL_VALIDATE
+
         return ResponseEntity.badRequest().body(
-            ErrorValidRes(500, errorDetails, Date())
+            ErrorValidRes(responseCode.code, errorDetails, Date())
         )
     }
 }

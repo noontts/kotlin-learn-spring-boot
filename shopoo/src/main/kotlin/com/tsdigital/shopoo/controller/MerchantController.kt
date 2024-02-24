@@ -1,8 +1,6 @@
 package com.tsdigital.shopoo.controller
 
-import com.tsdigital.shopoo.dto.merchant.CreateMerchantReq
-import com.tsdigital.shopoo.dto.merchant.CreateMerchantRes
-import com.tsdigital.shopoo.dto.merchant.RetrieveMerchantListRes
+import com.tsdigital.shopoo.dto.merchant.*
 import com.tsdigital.shopoo.services.MerchantService
 import jakarta.validation.Valid
 import org.springframework.web.bind.annotation.PostMapping
@@ -25,8 +23,11 @@ class MerchantController(private val merchantService: MerchantService) {
     ): RetrieveMerchantListRes{
         return merchantService.retrieveMerchantList(page, size)
     }
-    @PostMapping("/details")
-    fun getMerchantDetail(){}
+    @PostMapping("/detail")
+    fun getMerchantDetail(@Valid @RequestBody getMerchantDetailReq: GetMerchantDetailReq)
+    : GetMerchantDetailRes {
+        return merchantService.getMerchantDetail(getMerchantDetailReq.uuid)
+    }
     @PostMapping("/edit")
     fun editMerchantDetail(){}
     @PostMapping("/delete")
