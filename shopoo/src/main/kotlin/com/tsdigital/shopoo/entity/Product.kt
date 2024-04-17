@@ -16,7 +16,7 @@ import java.util.UUID
 data class Product (
         @Id
         @GeneratedValue(strategy = GenerationType.UUID)
-        var uuid: UUID,
+        val uuid: UUID,
         var name: String,
         var description: String,
         var price: Double,
@@ -26,11 +26,11 @@ data class Product (
 
         @ManyToOne
         @JoinColumn(name = "merchant_id")
-        var merchant: Merchant,
+        val merchant: Merchant,
 
         @CreationTimestamp
         @Column(name = "created_at", updatable = false)
-        var createdAt: Date,
+        val createdAt: Date,
 
         @UpdateTimestamp
         @Column(name = "updated_at")

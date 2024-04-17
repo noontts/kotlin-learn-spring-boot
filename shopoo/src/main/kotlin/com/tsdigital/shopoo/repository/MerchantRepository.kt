@@ -9,5 +9,4 @@ import java.util.UUID
 
 interface MerchantRepository: JpaRepository<Merchant, UUID>{
     fun findAllByIsDeleteIsFalse(pageable: Pageable): Page<Merchant>
-    fun findByUuidAndIsDeleteIsFalse(uuid: UUID): Optional<Merchant>
-}
+    fun findByUuidAndIsDeleteIsFalse(uuid: UUID): Optional<Merchant> }

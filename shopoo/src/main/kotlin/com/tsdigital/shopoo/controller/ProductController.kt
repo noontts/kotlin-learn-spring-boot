@@ -4,7 +4,6 @@ import com.tsdigital.shopoo.dto.product.GetProductByMerchantReq
 import com.tsdigital.shopoo.dto.product.GetProductByMerchantRes
 import com.tsdigital.shopoo.dto.product.GetProductDetailRes
 import com.tsdigital.shopoo.dto.product.GetProductPaginateRes
-import com.tsdigital.shopoo.services.MerchantService
 import com.tsdigital.shopoo.services.ProductService
 import jakarta.validation.Valid
 import org.springframework.web.bind.annotation.*

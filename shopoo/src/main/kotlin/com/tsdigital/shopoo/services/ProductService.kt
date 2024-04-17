@@ -2,13 +2,9 @@ package com.tsdigital.shopoo.services
 
 import com.tsdigital.shopoo.config.CommonException
 import com.tsdigital.shopoo.constants.ResponseCode
-import com.tsdigital.shopoo.dto.merchant.RetrieveMerchantListRes
 import com.tsdigital.shopoo.dto.product.GetProductByMerchantRes
-import com.tsdigital.shopoo.dto.product.ProductDTO
-import com.tsdigital.shopoo.entity.Merchant
 import com.tsdigital.shopoo.entity.Product
-import com.tsdigital.shopoo.mapper.MerchantListMapper
-import com.tsdigital.shopoo.mapper.ProductListMapper
+import com.tsdigital.shopoo.mapper.ProductMapper
 import com.tsdigital.shopoo.repository.ProductRepository
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageRequest
@@ -18,18 +14,18 @@ import java.util.UUID
 
 @Service
 class ProductService(private val productRepository: ProductRepository) {
-    fun getProductByMerchantUUID(uuid: UUID, page: Int, size: Int): GetProductByMerchantRes{
+    fun getProductByMerchantUUID(uuid: UUID, page: Int, size: Int): GetProductByMerchantRes {
         try {
             val pageable: Pageable = PageRequest.of(page, size)
             val pageResult: Page<Product> = productRepository.findAllByMerchantUuidAndIsDeleteIsFalse(uuid, pageable)
 
-            if (pageResult.isEmpty){
+            if (pageResult.isEmpty) {
                 val responseCode = ResponseCode.NOT_FOUND
                 throw CommonException(responseCode.code, responseCode.message)
             }
 
             val productDTO = pageResult.map { product ->
-                ProductListMapper.toProductDto(product)
+                ProductMapper.toProductDto(product)
             }
 
             val responseCode = ResponseCode.SUCCESS
@@ -39,9 +35,9 @@ class ProductService(private val productRepository: ProductRepository) {
                 responseCode.message,
                 productDTO.toList()
             )
-        }catch (e : CommonException){
+        } catch (e: CommonException) {
             throw e
-        }catch (e : Exception){
+        } catch (e: Exception) {
             println(e.message)
             val responseCode = ResponseCode.BAD_REQUEST
             throw CommonException(responseCode.code, responseCode.message)

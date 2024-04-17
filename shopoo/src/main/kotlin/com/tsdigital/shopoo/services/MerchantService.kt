@@ -4,8 +4,9 @@ import com.tsdigital.shopoo.config.CommonException
 import com.tsdigital.shopoo.constants.ResponseCode
 import com.tsdigital.shopoo.dto.merchant.*
 import com.tsdigital.shopoo.entity.Merchant
-import com.tsdigital.shopoo.mapper.MerchantListMapper
+import com.tsdigital.shopoo.mapper.MerchantMapper
 import com.tsdigital.shopoo.repository.MerchantRepository
+import com.tsdigital.shopoo.utils.MerchantUtils
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Pageable
@@ -14,9 +15,11 @@ import java.util.Optional
 import java.util.UUID
 
 @Service
-class MerchantService(private val merchantRepository: MerchantRepository) {
-    fun addMerchant(createMerchantReq: CreateMerchantReq)
-    : CreateMerchantRes{
+class MerchantService(
+    private val merchantRepository: MerchantRepository,
+    private val merchantUtils: MerchantUtils
+) {
+    fun addMerchant(createMerchantReq: CreateMerchantReq): CreateMerchantRes {
         try {
             val newMerchant = Merchant(
                 firstName = createMerchantReq.firstName,
@@ -30,16 +33,17 @@ class MerchantService(private val merchantRepository: MerchantRepository) {
             val responseCode = ResponseCode.SUCCESS_CREATE
 
             return CreateMerchantRes(responseCode.code, responseCode.message, merchant)
-        }catch (e: Exception){
+        } catch (e: Exception) {
             val responseCode = ResponseCode.BAD_REQUEST
             throw CommonException(responseCode.code, responseCode.message)
         }
     }
+
     fun getMerchantDetail(uuid: UUID): GetMerchantDetailRes {
         try {
             val merchantOptional: Optional<Merchant> = merchantRepository.findByUuidAndIsDeleteIsFalse(uuid)
 
-            if(merchantOptional.isEmpty){
+            if (merchantOptional.isEmpty) {
                 val responseCode = ResponseCode.NOT_FOUND
                 throw CommonException(responseCode.code, responseCode.message)
             }
@@ -48,25 +52,26 @@ class MerchantService(private val merchantRepository: MerchantRepository) {
             val responseCode = ResponseCode.SUCCESS
             return GetMerchantDetailRes(responseCode.code, responseCode.message, merchant)
 
-        }catch (e: CommonException){
+        } catch (e: CommonException) {
             throw e
-        }catch (e: Exception){
+        } catch (e: Exception) {
             val responseCode = ResponseCode.BAD_REQUEST
             throw CommonException(responseCode.code, responseCode.message)
         }
     }
+
     fun retrieveMerchantList(page: Int, size: Int): RetrieveMerchantListRes {
         try {
             val pageable: Pageable = PageRequest.of(page, size)
             val pageResult: Page<Merchant> = merchantRepository.findAllByIsDeleteIsFalse(pageable)
 
-            if (pageResult.isEmpty){
+            if (pageResult.isEmpty) {
                 val responseCode = ResponseCode.NOT_FOUND
                 throw CommonException(responseCode.code, responseCode.message)
             }
 
-            val merchantsDTO = pageResult.map {merchant ->
-                MerchantListMapper.toMerchantDto(merchant)
+            val merchantsDTO = pageResult.map { merchant ->
+                MerchantMapper.toMerchantDto(merchant)
             }
 
             val responseCode = ResponseCode.SUCCESS
@@ -77,23 +82,42 @@ class MerchantService(private val merchantRepository: MerchantRepository) {
                 nextPage = pageResult.hasNext(),
                 totalPages = pageResult.totalPages
             )
-        }
-        catch (e: CommonException){
+        } catch (e: CommonException) {
             throw e
-        } catch (e: Exception){
+        } catch (e: Exception) {
             val responseCode = ResponseCode.BAD_REQUEST
             throw CommonException(responseCode.code, responseCode.message)
         }
     }
-    fun editMerchantDetail(){}
-    fun deleteMerchant(uuid: UUID): DeleteMerchantRes{
-        try {
-            val merchantOptional: Optional<Merchant> = merchantRepository.findById(uuid)
 
-            if(merchantOptional.isEmpty){
-                val responseCode = ResponseCode.NOT_FOUND
-                throw CommonException(responseCode.code, responseCode.message)
+    fun editMerchantDetail(uuid: UUID, editMerchantReq: EditMerchantReq): EditMerchantRes {
+        try {
+            val merchantOptional: Optional<Merchant> = merchantUtils.merchantOptional(uuid)
+
+            val merchant = merchantOptional.get()
+
+            merchant.apply {
+                firstName = editMerchantReq.firstName
+                lastName = editMerchantReq.lastName
+                phone = editMerchantReq.phone
+                email = editMerchantReq.email
+                storeName = editMerchantReq.storeName
             }
+
+            merchantRepository.save(merchant)
+
+            val responseCode = ResponseCode.SUCCESS_EDIT
+
+            return EditMerchantRes(responseCode.code, responseCode.message)
+        } catch (e: Exception) {
+            val responseCode = ResponseCode.BAD_REQUEST
+            throw CommonException(responseCode.code, responseCode.message)
+        }
+    }
+
+    fun deleteMerchant(uuid: UUID): DeleteMerchantRes {
+        try {
+            val merchantOptional: Optional<Merchant> = merchantUtils.merchantOptional(uuid)
 
             val merchant = merchantOptional.get()
 
@@ -103,11 +127,12 @@ class MerchantService(private val merchantRepository: MerchantRepository) {
             val responseCode = ResponseCode.SUCCESS_DELETE
 
             return DeleteMerchantRes(responseCode.code, responseCode.message)
-        }catch (e: CommonException){
+        } catch (e: CommonException) {
             throw e
-        }catch (e: Exception){
+        } catch (e: Exception) {
             val responseCode = ResponseCode.BAD_REQUEST
             throw CommonException(responseCode.code, responseCode.message)
         }
     }
+
 }

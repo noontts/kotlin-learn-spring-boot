@@ -15,7 +15,7 @@ import java.util.*
 data class Merchant(
         @Id
         @GeneratedValue(strategy = GenerationType.UUID)
-        var uuid: UUID? = null,
+        val uuid: UUID? = null,
 
         @Column(name = "store_name")
         var storeName: String,
@@ -37,7 +37,7 @@ data class Merchant(
 
         @CreationTimestamp
         @Column(name = "created_at", updatable = false)
-        var createdAt: Date? = null,
+        val createdAt: Date? = null,
 
         @UpdateTimestamp
         @Column(name = "updated_at")
