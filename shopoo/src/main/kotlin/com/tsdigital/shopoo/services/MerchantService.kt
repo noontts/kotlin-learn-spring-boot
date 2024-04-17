@@ -54,7 +54,7 @@ class MerchantService(
 
         } catch (e: CommonException) {
             throw e
-        } catch (e: Exception) {
+        } catch (e: RuntimeException) {
             val responseCode = ResponseCode.BAD_REQUEST
             throw CommonException(responseCode.code, responseCode.message)
         }
