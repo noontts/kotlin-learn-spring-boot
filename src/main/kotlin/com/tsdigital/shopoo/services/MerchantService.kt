@@ -60,9 +60,9 @@ class MerchantService(
         }
     }
 
-    fun retrieveMerchantList(page: Int, size: Int): RetrieveMerchantListRes {
+    fun retrieveMerchantList(offset: Int, limit: Int): RetrieveMerchantListRes {
         try {
-            val pageable: Pageable = PageRequest.of(page, size)
+            val pageable: Pageable = PageRequest.of(offset, limit)
             val pageResult: Page<Merchant> = merchantRepository.findAllByIsDeleteIsFalse(pageable)
 
             if (pageResult.isEmpty) {

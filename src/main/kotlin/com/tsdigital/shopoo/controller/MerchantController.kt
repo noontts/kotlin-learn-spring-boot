@@ -20,10 +20,10 @@ class MerchantController(private val merchantService: MerchantService) {
 
     @PostMapping("/list")
     fun retrieveMerchantList(
-        @RequestParam(defaultValue = "0") page: Int,
-        @RequestParam(defaultValue = "15") size: Int
+        @RequestParam(defaultValue = "0") offset: Int,
+        @RequestParam(defaultValue = "15") limit: Int
     ): RetrieveMerchantListRes {
-        return merchantService.retrieveMerchantList(page, size)
+        return merchantService.retrieveMerchantList(offset, limit)
     }
 
     @PostMapping("/detail")
